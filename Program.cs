@@ -11,6 +11,7 @@
             if (File.Exists(filePath))
             {
                 transactionHistory.ReadStorage(filePath);
+                Console.WriteLine($"Imported data from {filePath}");
             }
 
             Console.WriteLine("");

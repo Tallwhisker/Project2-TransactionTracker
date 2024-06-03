@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace Project2_TransactionTracker
 {
-    internal class TransactionManager
+    internal static class TransactionManager
     {
 
-        public void NewExpense()
+        public static Transaction New()
         {
-
+            transactionH
         }
-        public void NewIncome() 
+
+        public static void Edit() 
         {
 
         }

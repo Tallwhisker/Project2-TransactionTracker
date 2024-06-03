@@ -2,47 +2,100 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Project2_TransactionTracker
 {
     internal class TransactionHistory
     {
-        internal List<Transaction> _transactions = new List<Transaction>();
-        internal decimal _balance = 0;
+        private List<Transaction> _transactions = [];
+        private List<Transaction> _sortedTransactions = [];
+        private decimal _balance = 0;
         
-        public decimal CalculateBalance()
+        internal decimal CalculateBalance()
         {
             _balance = (decimal)_transactions.Sum(value => value.TransactionValue);
             return _balance;
         }
-        public void AddTransaction()
+        internal void AddTransaction()
         {
-            switch (item.TypeOfTransaction)
-            {
-                case "expense":
-                    if(item.TransactionValue > CalculateBalance())
-                    {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Expense exceeds balance.");
-                        Console.WriteLine($"Current balance: {this._balance}.");
-                    } else
-                    {
-                        this._transactions.Add(item);
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Transaction added.");
-                    }
-                    break;
+            Regex dateRegex = new Regex(@"^\d{4}-\d{2}-\d{2}$");
+            string ?input = null;
 
-                case "income":
-                    if (item.TransactionValue + CalculateBalance() < decimal.MaxValue)
-                    {
-                        this._transactions.Add(item);
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Transaction added.");
-                    }
-                    break;
-            }
+            DateOnly dateTime;
+            string ?itemType;
+            string ?itemName;
+            decimal itemValue;
+
+            do
+            {
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine("Date format: YYYY-MM-DD");
+                Console.Write("Input transaction date: ");
+                input = Console.ReadLine().ToLower().Trim();
+
+                if (dateRegex.Count(input) == 10)
+                {
+                    string[] dateArray = input.Split('-');
+                    int year = Convert.ToInt32(dateArray[0]);
+                    int month = Convert.ToInt32(dateArray[1]);
+                    int day = Convert.ToInt32(dateArray[2]);
+
+                    dateTime = new DateOnly(year, month, day);
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error: Incorrect date. YYYY-MM-DD required.");
+                    continue;
+                }
+
+                Console.WriteLine("Types: 'Expense' 'Income' ");
+                Console.Write("Input transaction type: ");
+                input = Console.ReadLine().ToLower().Trim();
+
+                if(input == "expense" || input == "income")
+                {
+                    itemType = input;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error: Incorrect type. 'expense' or 'income' required.");
+                    continue;
+                }
+
+                Console.Write("Input transaction name: ");
+                input = Console.ReadLine().ToLower().Trim();
+                if( ! String.IsNullOrEmpty(input))
+                {
+                    itemName = input;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error: Name can't be empty");
+                    continue;
+                }
+
+                Console.Write("Input transaction value: ");
+                input = Console.ReadLine().ToLower().Trim();
+
+                bool value = Decimal.TryParse(input, out decimal number);
+
+                if(value == false) 
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error: Value needs to be a number.");
+                    continue;
+                }
+
+                 itemValue = number; 
+
+                this._transactions.Add(new Transaction(dateTime, itemType, itemName, itemValue));
+
+            } while (input != "exit");
         }
 
         public void RemoveTransaction()
