@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace Project2_TransactionTracker
 {
-    internal class Storage
+    internal class TransactionManager
     {
+
+        public void NewExpense()
+        {
+
+        }
+        public void NewIncome() 
+        {
+
+        }
     }
 }
