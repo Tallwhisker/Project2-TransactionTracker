@@ -3,23 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Project2_TransactionTracker
 {
-    internal class Transaction
+    public enum TransactionTypes
     {
-        public Transaction(DateOnly TransactionTime, string? typeOfTransaction, string TransactionName, decimal transactionValue)
+        Expense = -1,
+        Income = 1
+    }
+
+    [XmlType("Transaction")]
+    public class Transaction
+    {
+        public Transaction() { }
+
+        public Transaction(TransactionTypes TransactionType, DateOnly TransactionTime, string TransactionName, decimal transactionValue)
         {
+            this.TransactionType = TransactionType;
             this.TransactionTime = TransactionTime;
             this.TransactionName = TransactionName;
-            this.TypeOfTransaction = typeOfTransaction;
             this.TransactionValue = transactionValue;
         }
 
-        public DateOnly TransactionTime { get; set; }
-        public string TransactionName { get; set; }
-        public string ?TypeOfTransaction { get; set; }
-        public decimal TransactionValue { get; set; }
+        [XmlAttribute("TransactionType")]
+        public TransactionTypes TransactionType
+        { get; set; }
 
+        [XmlIgnore]
+        public DateOnly TransactionTime
+        { get; set; }
+
+        [XmlAttribute("TransactionName")]
+        public string TransactionName
+        { get; set; }
+
+        [XmlAttribute("TransactionValue")]
+        public decimal TransactionValue
+        { get; set; }
+
+        [XmlAttribute("DateString")]
+        public string TimeString 
+        { 
+            get { return this.TransactionTime.ToString("yyyy-MM-dd"); }
+            set { this.TransactionTime = DateOnly.Parse(value); } 
+        }
     }
 }

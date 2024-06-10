@@ -4,20 +4,11 @@
     {
         private static void Main(string[] args)
         {
+            string filePath = @"../TransactionHistory.xml";
             //Create instance of history & read file if it exists.
-            TransactionHistory transactionHistory = new TransactionHistory();
+            TransactionHistory History = new TransactionHistory(filePath);
 
-            string filePath = @"../TransactionHistory.txt";
-            if (File.Exists(filePath))
-            {
-                transactionHistory.ReadStorage(filePath);
-                Console.WriteLine($"Imported data from {filePath}");
-            }
-
-            Console.WriteLine("");
-            Console.WriteLine("");
-            Console.WriteLine($"Current balance: {transactionHistory.CalculateBalance()}");
-            Console.WriteLine("");
+            Console.WriteLine($"\nCurrent balance: {History.CalculateBalance()}");
 
             string input;
             do 
@@ -32,19 +23,40 @@
                         break;
 
                     case "add":
-                        transactionHistory.AddTransaction();
+                        TransactionManager.New(History);
                         break;
 
                     case "edit":
-                        transactionHistory.EditTransaction();
-                        break;
-
-                    case "remove":
-                        transactionHistory.RemoveTransaction();
+                    case"remove":
+                        TransactionManager.Edit(History);
                         break;
 
                     case "list":
-                        transactionHistory.ShowTransactions();
+                        Console.WriteLine("All / Expense / Income");
+                        string listInput = Console.ReadLine().Trim();
+                        History.ShowTransactions(listInput);
+                        break;
+
+                    case "sort":
+                        Console.WriteLine("Sort by 'date' 'name' 'cost");
+                        string sortInput = Console.ReadLine().Trim();
+                        History.Sort(sortInput);
+                        break;
+
+                    case "dev":
+                        History.Add(new Transaction(
+                            TransactionTypes.Income,
+                            DateOnly.Parse("2024-05-01"),
+                            "Lön",
+                            9000
+                        ));
+
+                        History.Add(new Transaction(
+                            TransactionTypes.Expense,
+                            DateOnly.Parse("2024-05-02"),
+                            "Willys",
+                            1324
+                        ));
                         break;
 
                     default:
@@ -54,7 +66,10 @@
 
                 }
 
-            } while (input != "quit");
+                //Save after each change
+                History.WriteHistory();
+            }
+            while (input != "quit");
         }
     }
 }
