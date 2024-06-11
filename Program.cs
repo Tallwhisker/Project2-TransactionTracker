@@ -9,18 +9,21 @@
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine("-------------\n" +
-                "| IseeMoney |\n" +
+                "| KittyCash |\n" +
                 "-------------"
             );
             Console.WriteLine("\nCommands:\n" +
                 "> Add: Add transaction.\n" +
                 "> FastAdd: Shortened Add method\n" +
                 "> Edit: Edit or Remove transaction. \n" +
-                "> Sort: Sort transactions by category. Default Ascending.\n" +
+                "> Sort: Sort transactions by category.\n" +
+                "> >Sort Methods: Date, Name, Value (Ascending/Descending)\n" +
                 "> List: Display transactions by category.\n" +
+                "> >List Methods: All, Expense, Income.\n" +
                 "> Reset: Reset transaction history.\n" +
                 "> Quit: Quit the program.\n" +
-                "List & Sort have shortened versions. Append by [method]"
+                "List & Sort have shortened versions. Append by [method].\n" +
+                "Example: \"sort date\" to sort by date ascending."
             );
             Console.WriteLine($"\nCurrent balance: {History.CalculateBalance()}");
 
@@ -28,7 +31,7 @@
             do 
             {
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
-                Console.WriteLine("\nMain Commands: Add, Fastadd, Edit, List, Sort, Reset, Quit");
+                Console.WriteLine("\nMain Commands: Add, Fastadd, Edit, List, Sort, Reset, Quit, Help");
                 Console.Write("Input main: ");
                 input = Console.ReadLine();
 
@@ -69,11 +72,11 @@
                         History.ShowTransactions("income");
                         break;
 
-
+                    //Sort has 1 required and 1 optional argument.
                     case "sort":
                         Console.WriteLine("Sort methods: Date / Name / Value");
                         Console.Write("Sort by: ");
-                        string sortInput = Console.ReadLine().Trim();
+                        string? sortInput = Console.ReadLine().Trim();
                         History.Sort(sortInput);
                         break;
 
@@ -94,13 +97,27 @@
                         History.ResetHistory();
                         break;
 
+                    case "help":
+                        Console.WriteLine("\nCommands:\n" +
+                            "> Add: Add transaction.\n" +
+                            "> FastAdd: Shortened Add method\n" +
+                            "> Edit: Edit or Remove transaction. \n" +
+                            "> Sort: Sort transactions by category.\n" +
+                            "> >Sort Methods: Date, Name, Value (Ascending/Descending)\n" +
+                            "> List: Display transactions by category.\n" +
+                            "> >List Methods: All, Expense, Income.\n" +
+                            "> Reset: Reset transaction history.\n" +
+                            "> Quit: Quit the program.\n" +
+                            "List & Sort have shortened versions. Append by [method].\n" +
+                            "Example: \"sort date\" to sort by date ascending."
+                        );
+                        break;
+
                     default:
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("> Unknown command.");
                         break;
-
                 }
-
                 //Save after each change
                 History.WriteHistory();
             }
