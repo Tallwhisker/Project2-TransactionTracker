@@ -3,12 +3,15 @@
     internal class Program
     {
         private static void Main(string[] args)
-        {
+        {           
             string filePath = @"../TransactionHistory.xml";
-
-            //Create instance of history & read file if it exists.
             TransactionHistory History = new TransactionHistory(filePath);
-            Console.WriteLine("Commands:\n" +
+
+            Console.WriteLine("-------------\n" +
+                "| IseeMoney |\n" +
+                "-------------"
+            );
+            Console.WriteLine("\nCommands:\n" +
                 "> Add: Add transaction.\n" +
                 "> Fastadd: Shortened Add method\n" +
                 "> Edit: Edit or Remove transaction. \n" +
@@ -16,15 +19,15 @@
                 "> List: Display transactions by category.\n" +
                 "> Reset: Reset transaction history.\n" +
                 "> Quit: Quit the program.\n" +
-                "List & Sort have shortened versions. Append by [method]."
+                "List & Sort have shortened versions. Append by [method]"
             );
             Console.WriteLine($"\nCurrent balance: {History.CalculateBalance()}");
 
-            string input;
+            string? input;
             do 
             {
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("\nMain Commands: Add, Fastadd, Edit, List, Sort, Reset, Quit.");
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                Console.WriteLine("\nMain Commands: Add, Fastadd, Edit, List, Sort, Reset, Quit");
                 Console.Write("Input main: ");
                 input = Console.ReadLine();
 
@@ -67,7 +70,7 @@
 
 
                     case "sort":
-                        Console.WriteLine("Sort methods: Date / Name / Cost");
+                        Console.WriteLine("Sort methods: Date / Name / Value");
                         Console.Write("Sort by: ");
                         string sortInput = Console.ReadLine().Trim();
                         History.Sort(sortInput);
@@ -81,9 +84,10 @@
                         History.Sort("name");
                         break;
 
-                    case "sort cost":
-                        History.Sort("cost");
+                    case "sort value":
+                        History.Sort("value");
                         break;
+
 
                     case "reset":
                         History.ResetHistory();
@@ -91,7 +95,7 @@
 
                     default:
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("> Unknown command");
+                        Console.WriteLine("> Unknown command.");
                         break;
 
                 }

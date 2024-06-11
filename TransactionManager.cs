@@ -26,19 +26,12 @@ namespace Project2_TransactionTracker
                     continue;
                 }
 
-                //CheckInput returns true if string is empty or null.
-                if (CheckInput(itemType))
-                {
-                    Console.WriteLine("Transaction type can't be empty.");
-                    continue;
-                }
 
-                //Check if type exists
+                //Check if type is correct
                 switch (itemType.ToLower())
                 {
                     case "expense":
                     case "income":
-
                         break;
 
                     default:
@@ -110,46 +103,51 @@ namespace Project2_TransactionTracker
                             itemDate,
                             itemName,
                             itemValue
-                            ));
+                        ));
                         break;
 
                     case "income":
+                        if (itemValue < 0)
+                        {
+                            itemValue = Math.Abs(itemValue);
+                        }
+
                         history.Add(new Transaction(
                             TransactionTypes.Income,
                             itemDate,
                             itemName,
                             itemValue
-                            ));
+                        ));
                         break;
 
                     default:
                         break;
                 }
             }
-            //End of 'New' loop
-            while (itemType != "exit");
+            //End of loop
+            while (itemType.ToLower() != "exit");
 
             return history;
         }
 
         public static TransactionHistory FastAdd(TransactionHistory history)
         {
-            Console.WriteLine("Fastadd Mode. 'exit' when done.");
-            string input;
+            Console.WriteLine("FastAdd Mode. 'exit' when done.");
+            string? input;
             do
             {
-                Console.ResetColor();
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
                 Console.WriteLine("\nPositive value for income, negative for expense.\n" +
-                    "Input format: YYYY-MM-DD NAME VALUE\n"
+                    "Input format: YYYY-MM-DD NAME VALUE"
                 );
                 Console.Write("Input: ");
                 input = Console.ReadLine();
 
-                if (input.ToLower() == "exit")
+                if (input.ToLower().Trim() == "exit")
                 { 
                     continue; 
                 }
-                else if (String.IsNullOrEmpty(input))
+                else if (CheckInput(input))
                 {
                     Console.WriteLine("Input can't be empty. Starting over.");
                     continue;
@@ -157,6 +155,12 @@ namespace Project2_TransactionTracker
 
                 List<String> strings = input.Split(" ").ToList();
 
+                if (strings.Count < 3)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error: Minimum 3 values are required.");
+                    continue;
+                }
 
                 bool isValidDate = DateOnly.TryParse(
                     strings.First().ToString(),
@@ -164,15 +168,30 @@ namespace Project2_TransactionTracker
                 );
                 strings.RemoveAt(0);
 
-
                 bool isValidValue = Decimal.TryParse(
                     strings.Last().ToString(),
                     out Decimal newDecimal
                 );
-                strings.RemoveAt(strings.Count - 1);
 
-                strings.TrimExcess();
-                string newName = String.Join<String>(" ", strings);
+                strings.RemoveAt(strings.Count - 1);
+                //Need to trim to guard against name being spaces.
+                string? newName = String.Join<String>(" ", strings).Trim();
+
+                if (!isValidDate)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Error: Date format incorrect.");
+                }
+                if (!isValidValue)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Error: Value range must be: {Decimal.MinValue} to {Decimal.MaxValue}");
+                }
+                if (CheckInput(newName))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Error: Name can't be empty.");
+                }
 
                 if (isValidDate && isValidValue && !CheckInput(newName))
                 {
@@ -195,24 +214,8 @@ namespace Project2_TransactionTracker
                         ));
                     }
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"> Added: Date: {newDate} Value: {newDecimal} Name: {newName}");
+                    Console.WriteLine($"> Date: {newDate} Value: {newDecimal} Name: {newName}");
                 }
-                else if (! isValidDate)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Date format incorrect.");
-                }
-                else if (! isValidValue)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Value range must be: {Decimal.MinValue} to {Decimal.MaxValue}");
-                }
-                else
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Name can't be empty.");
-                }
-
 
             } 
             while (input.ToLower() != "exit");
@@ -226,7 +229,7 @@ namespace Project2_TransactionTracker
             Console.Write("Input Method: ");
             string editMode = Console.ReadLine().Trim();
 
-            //Guard switch.
+            //Check input
             switch (editMode.ToLower()) 
             {
                 case "edit":
@@ -247,34 +250,29 @@ namespace Project2_TransactionTracker
             //Sort list
             Console.WriteLine("Sort method: Date / Name / Cost");
             Console.Write("Sort by: ");
-            string sortInput = Console.ReadLine().Trim();
+            string? sortInput = Console.ReadLine().Trim();
             history.Sort(sortInput);
 
             //Display
             Console.WriteLine("List method: All / Expense / Income");
             Console.Write("List by: ");
             string? listInput = Console.ReadLine().Trim();
-            history.ShowTransactions(listInput);
 
 
-            string inputIndex = "";
-            do {
-                Console.ResetColor();
+            string? inputIndex;
+            do 
+            {
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                history.ShowTransactions(listInput);
 
                 Console.WriteLine("\nInputs: Index / Exit / List");
                 Console.Write($"{editMode} Index: ");
                 inputIndex = Console.ReadLine();
                 bool isIndex = Int32.TryParse(inputIndex, out int itemIndex);
 
-                switch (inputIndex)
+                if ( inputIndex.ToLower() == "exit" )
                 {
-                    case "list":
-                        history.ShowTransactions(listInput);
-                        continue;
-
-                    case "exit":
-                        continue;
-                        
+                    continue;
                 }
 
                 if ( isIndex )

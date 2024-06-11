@@ -42,6 +42,7 @@ namespace Project2_TransactionTracker
         public decimal TransactionValue
         { get; set; }
 
+        //This exists because XmlReader can't handle DateOnly objects. Sad.
         [XmlAttribute("DateString")]
         public string TimeString 
         { 
