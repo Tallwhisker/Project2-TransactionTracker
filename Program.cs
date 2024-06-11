@@ -4,7 +4,7 @@
     {
         private static void Main(string[] args)
         {           
-            string filePath = @"../TransactionHistory.xml";
+            string filePath = @"./TransactionHistory.xml";
             TransactionHistory History = new TransactionHistory(filePath);
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
@@ -14,7 +14,7 @@
             );
             Console.WriteLine("\nCommands:\n" +
                 "> Add: Add transaction.\n" +
-                "> FastAdd: Shortened Add method\n" +
+                "> FastAdd: Shortened Add method.\n" +
                 "> Edit: Edit or Remove transaction. \n" +
                 "> Sort: Sort transactions by category.\n" +
                 "> >Sort Methods: Date, Name, Value (Ascending/Descending)\n" +
@@ -100,7 +100,7 @@
                     case "help":
                         Console.WriteLine("\nCommands:\n" +
                             "> Add: Add transaction.\n" +
-                            "> FastAdd: Shortened Add method\n" +
+                            "> FastAdd: Shortened Add method.\n" +
                             "> Edit: Edit or Remove transaction. \n" +
                             "> Sort: Sort transactions by category.\n" +
                             "> >Sort Methods: Date, Name, Value (Ascending/Descending)\n" +

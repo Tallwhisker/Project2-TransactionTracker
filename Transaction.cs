@@ -35,7 +35,7 @@ namespace Project2_TransactionTracker
         { get; set; }
 
         [XmlAttribute("TransactionName")]
-        public string TransactionName
+        public string? TransactionName
         { get; set; }
 
         [XmlAttribute("TransactionValue")]

@@ -173,6 +173,7 @@ namespace Project2_TransactionTracker
 
         public void Sort(string method, string methodTwo = "")
         {
+            //If optional argument methodTwo isn't provided, ask user for it.
             if (String.IsNullOrEmpty(methodTwo)) 
             {
                 Console.WriteLine("Sort by Ascending 'a' or Descending 'd'?");
@@ -307,7 +308,7 @@ namespace Project2_TransactionTracker
                         transactions = (List<Transaction>)serializer.Deserialize(reader);
                     }
                 }
-                catch (Exception e) 
+                catch (Exception) 
                 {
                     reader.Dispose();
                     reader.Close();
@@ -350,7 +351,7 @@ namespace Project2_TransactionTracker
         {
             Console.WriteLine("Reset history, confirm: Y / N");
             Console.Write("Input: ");
-            string input = Console.ReadLine();
+            string? input = Console.ReadLine();
 
             switch (input)
             {
