@@ -7,15 +7,16 @@
             string filePath = @"../TransactionHistory.xml";
             TransactionHistory History = new TransactionHistory(filePath);
 
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
             Console.WriteLine("-------------\n" +
                 "| IseeMoney |\n" +
                 "-------------"
             );
             Console.WriteLine("\nCommands:\n" +
                 "> Add: Add transaction.\n" +
-                "> Fastadd: Shortened Add method\n" +
+                "> FastAdd: Shortened Add method\n" +
                 "> Edit: Edit or Remove transaction. \n" +
-                "> Sort: Sort transactions by category.\n" +
+                "> Sort: Sort transactions by category. Default Ascending.\n" +
                 "> List: Display transactions by category.\n" +
                 "> Reset: Reset transaction history.\n" +
                 "> Quit: Quit the program.\n" +
@@ -31,7 +32,7 @@
                 Console.Write("Input main: ");
                 input = Console.ReadLine();
 
-                switch (input) 
+                switch (input.ToLower()) 
                 {
                     case "quit":
                         break;
@@ -77,15 +78,15 @@
                         break;
 
                     case "sort date":
-                        History.Sort("date");
+                        History.Sort("date", "a");
                         break;
 
                     case "sort name":
-                        History.Sort("name");
+                        History.Sort("name", "a");
                         break;
 
                     case "sort value":
-                        History.Sort("value");
+                        History.Sort("value", "a");
                         break;
 
 

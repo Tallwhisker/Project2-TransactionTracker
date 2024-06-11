@@ -248,7 +248,7 @@ namespace Project2_TransactionTracker
 
 
             //Sort list
-            Console.WriteLine("Sort method: Date / Name / Cost");
+            Console.WriteLine("Sort method: Date / Name / Value");
             Console.Write("Sort by: ");
             string? sortInput = Console.ReadLine().Trim();
             history.Sort(sortInput);

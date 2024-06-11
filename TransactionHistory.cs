@@ -171,30 +171,51 @@ namespace Project2_TransactionTracker
         }
 
 
-        public void Sort(string method)
+        public void Sort(string method, string methodTwo = "")
         {
+            if (String.IsNullOrEmpty(methodTwo)) 
+            {
+                Console.WriteLine("Sort by Ascending 'a' or Descending 'd'?");
+                Console.Write("Input: ");
+                methodTwo = Console.ReadLine().Trim();
+            }
+            method = String.Concat(method, $" {methodTwo}");
+
             switch (method.ToLower())
             {
-                case "name":
-                    Console.WriteLine("> Sorted by Name\n");
+                case "name a":
+                    Console.WriteLine("> Sorted by Name Ascending");
                     this._transactions = this._transactions.OrderBy(name => name.TransactionName).ToList();
+                    break; 
+
+                case "name d":
+                    Console.WriteLine("> Sorted by Name Descending");
+                    this._transactions = this._transactions.OrderByDescending(name => name.TransactionName).ToList();
                     break;
 
-                case "value":
+                case "value a":
                     this._transactions = this._transactions.OrderBy(value => value.TransactionValue).ToList();
-                    Console.WriteLine("> Sorted by Value\n");
-
+                    Console.WriteLine("> Sorted by Value Ascending");
                     break;
 
-                case "date":
-                    this._transactions = this._transactions.OrderBy(date => date.TransactionTime).ToList();
-                    Console.WriteLine("> Sorted by Date\n");
+                case "value d":
+                    this._transactions = this._transactions.OrderByDescending(value => value.TransactionValue).ToList();
+                    Console.WriteLine("> Sorted by Value Descending");
+                    break;
 
+                case "date a":
+                    this._transactions = this._transactions.OrderBy(date => date.TransactionTime).ToList();
+                    Console.WriteLine("> Sorted by Date Ascending");
+                    break;
+
+                case "date d":
+                    this._transactions = this._transactions.OrderByDescending(date => date.TransactionTime).ToList();
+                    Console.WriteLine("> Sorted by Date Descending");
                     break;
 
                 default:
-                    Console.WriteLine("> Input not recognized. Defaulting to Date.\n");
-                    this.Sort("date");
+                    Console.WriteLine("> Input not recognized. Defaulting to Date Ascending.");
+                    this._transactions = this._transactions.OrderBy(date => date.TransactionTime).ToList();
                     break;
             }
         }
