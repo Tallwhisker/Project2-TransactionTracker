@@ -1,4 +1,4 @@
-# Transaction Tracker KittyCash
+# KittyCash
 
 
 Console application for tracking transaction data.  
