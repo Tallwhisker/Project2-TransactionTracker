@@ -1,4 +1,4 @@
-# Project2-TransactionTracker
+# Transaction Tracker KittyCash
 
 
 Console application for tracking transaction data.  
