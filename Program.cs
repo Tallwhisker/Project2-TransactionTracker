@@ -26,7 +26,7 @@
                 "List & Sort have shortened versions. Append by [method].\n" +
                 "Example: \"sort date a\" to sort by date ascending."
             );
-            Console.WriteLine($"\nCurrent balance: {History.CalculateBalance()}");
+            Console.WriteLine($"\nCurrent balance: {History.CalculateBalance():C2}");
 
             string? input;
             do 

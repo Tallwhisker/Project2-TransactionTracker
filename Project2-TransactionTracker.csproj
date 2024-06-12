@@ -6,6 +6,8 @@
     <RootNamespace>Project2_TransactionTracker</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Title>KittyCash</Title>
+    <Authors>Kevin R</Authors>
   </PropertyGroup>
 
 </Project>

@@ -19,7 +19,7 @@ namespace Project2_TransactionTracker
 
             //ReadHistory checks FilePath and reads history, or returns empty List.
             this._transactions = this.ReadHistory();
-            this._balance = 0;
+            this._balance = 0m;
         }
 
         public string FilePath { get; set; }
@@ -270,7 +270,7 @@ namespace Project2_TransactionTracker
                         $"{index,-13}" +
                         $"{item.TransactionTime,-17}" +
                         $"{item.TransactionName,-25}" +
-                        $"{item.TransactionValue,-15}"
+                        $"{item.TransactionValue,-15:C2}"
                     );
                 }
                 //Else only allow matching types
@@ -280,14 +280,14 @@ namespace Project2_TransactionTracker
                         $"{index,-13}" +
                         $"{item.TransactionTime,-17}" +
                         $"{item.TransactionName,-25}" +
-                        $"{item.TransactionValue,-15}"
+                        $"{item.TransactionValue,-15:C2}"
                     );
                 }
                 index++;
             }
             Console.WriteLine($"Account balance:".PadLeft(46) +
                 $"".PadLeft(9) +
-                $"{this.CalculateBalance()}");
+                $"{this.CalculateBalance():C}");
         }
 
 
