@@ -1,20 +1,20 @@
 # Project2-TransactionTracker
 
 
-Console application for tracking transaction data.
-Supports adding, editing, sorting and has session-independent data storage.
+Console application for tracking transaction data.  
+Supports adding, editing, sorting and has session-independent data storage.  
 The transactions have 2 types (Income and Expense) with Date, Name and Value properties.
-
-
+  
+  
 ## Internal things
 
-
+  
 ### Program
-Holds the Main menu selection and calls functions.
-In case of data management the History object that holds the data is passed as an argument.
+Holds the Main menu selection and calls functions.  
+In case of data management the History object that holds the data is passed as an argument.  
 Data is saved for each time you pass the Main loop and upon startup the program checks for local data.
 
-
+  
 #### Methods
 - Add: Step-by-step method to add transactions.
 - FastAdd: Fast 1-line method to add transactions.
@@ -33,21 +33,21 @@ The Main menu has access to Quick commands for Sort and List.
 
 In other places the program will ask what method you want to use for sorting and display.
 
-
+  
 ### TransactionManager
 Handles the creation of Transaction objects and interactions with TransactionHistory object.
 
-
+  
 #### Methods
 - New, Fastadd: Construct transactions from new data.
 - Edit: Handles selection of transactions to remove or edit.
 - EqualStrings, EmptyString: Methods for string verification.
 
-
+  
 ### TransactionHistory
 This object holds all the data and is the only Class allowed to modify the data.
 
-
+  
 #### Methods
 - Add: Checks and adds the input transaction object to the data list.
 - Edit: Displays and lets user edit the data of input index from TransactionManager: Edit
@@ -58,7 +58,7 @@ This object holds all the data and is the only Class allowed to modify the data.
 - WriteHistory: Saves the current data to file.
 - ResetHistory: Deletes local data and saves a new empty one.
 
-- 
+  
 ### Transaction
 #### Properties
 - Type (Expense, Income)
