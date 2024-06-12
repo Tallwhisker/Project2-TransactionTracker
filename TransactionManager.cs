@@ -21,7 +21,7 @@ namespace Project2_TransactionTracker
                 Console.Write("Transaction type: ");
                 itemType = Console.ReadLine().Trim();
 
-                if (itemType.ToLower() == "exit")
+                if (EqualStrings(itemType, "exit"))
                 {
                     continue;
                 }
@@ -63,8 +63,8 @@ namespace Project2_TransactionTracker
 
 
                 Console.Write("Transaction name: ");
-                string itemName = Console.ReadLine().Trim();
-                if (CheckInput(itemName))
+                string? itemName = Console.ReadLine().Trim();
+                if (EmptyString(itemName))
                 {
                     Console.WriteLine("Transaction name can't be empty.");
                     continue;
@@ -90,7 +90,7 @@ namespace Project2_TransactionTracker
                 }
 
 
-                switch (itemType.ToLower()) 
+                switch (itemType.ToLower())
                 {
                     case "expense":
                         if (itemValue > 0)
@@ -125,8 +125,8 @@ namespace Project2_TransactionTracker
                 }
             }
             //End of loop
-            while (itemType.ToLower() != "exit");
-
+            while ( ! EqualStrings(itemType, "exit"));      
+            
             return history;
         }
 
@@ -143,18 +143,18 @@ namespace Project2_TransactionTracker
                 Console.Write("Input: ");
                 input = Console.ReadLine();
 
-                if (input.ToLower().Trim() == "exit")
+                if ( EqualStrings(input.Trim(), "exit") )
                 { 
                     continue; 
                 }
-                else if (CheckInput(input))
+                else if (EmptyString(input))
                 {
                     Console.WriteLine("Input can't be empty. Starting over.");
                     continue;
                 }
 
-                List<String> strings = input.Split(" ").ToList();
 
+                List<String> strings = [.. input.Split(" ")];
                 if (strings.Count < 3)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -172,28 +172,28 @@ namespace Project2_TransactionTracker
                     strings.Last().ToString(),
                     out Decimal newDecimal
                 );
-
                 strings.RemoveAt(strings.Count - 1);
+
                 //Need to trim to guard against name being spaces.
                 string? newName = String.Join<String>(" ", strings).Trim();
 
-                if (!isValidDate)
+                if ( ! isValidDate)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Error: Date format incorrect.");
                 }
-                if (!isValidValue)
+                if ( ! isValidValue)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Error: Value range must be: {Decimal.MinValue} to {Decimal.MaxValue}");
                 }
-                if (CheckInput(newName))
+                if (EmptyString(newName))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Error: Name can't be empty.");
                 }
 
-                if (isValidDate && isValidValue && !CheckInput(newName))
+                if (isValidDate && isValidValue && ! EmptyString(newName))
                 {
                     if (newDecimal < 0)
                     {
@@ -218,7 +218,7 @@ namespace Project2_TransactionTracker
                 }
 
             } 
-            while (input.ToLower() != "exit");
+            while ( ! EqualStrings(input, "exit"));
 
             return history;
         }
@@ -226,8 +226,8 @@ namespace Project2_TransactionTracker
         public static TransactionHistory Edit(TransactionHistory history) 
         {
             Console.WriteLine("Edit or Remove?");
-            Console.Write("Input Method: ");
-            string editMode = Console.ReadLine().Trim();
+            Console.Write("Method: ");
+            string? editMode = Console.ReadLine().Trim();
 
             //Check input
             switch (editMode.ToLower()) 
@@ -248,14 +248,14 @@ namespace Project2_TransactionTracker
 
 
             //Sort list
-            Console.WriteLine("Sort method: Date / Name / Value");
+            Console.WriteLine("\nSort method: Date / Name / Value");
             Console.Write("Sort by: ");
             string? sortInput = Console.ReadLine().Trim();
             history.Sort(sortInput);
 
             //Display
-            Console.WriteLine("List method: All / Expense / Income");
-            Console.Write("List by: ");
+            Console.WriteLine("\nList method: All / Expense / Income");
+            Console.Write("List: ");
             string? listInput = Console.ReadLine().Trim();
 
 
@@ -267,10 +267,10 @@ namespace Project2_TransactionTracker
 
                 Console.WriteLine("\nInputs: Index / Exit / List");
                 Console.Write($"{editMode} Index: ");
-                inputIndex = Console.ReadLine();
+                inputIndex = Console.ReadLine().Trim();
                 bool isIndex = Int32.TryParse(inputIndex, out int itemIndex);
 
-                if ( inputIndex.ToLower() == "exit" )
+                if (EqualStrings(inputIndex, "exit") )
                 {
                     continue;
                 }
@@ -295,13 +295,13 @@ namespace Project2_TransactionTracker
                     return history;
                 }
             }
-            while (inputIndex.ToLower() != "exit");
+            while ( ! EqualStrings(inputIndex, "exit"));
 
             return history;
         }
 
 
-        internal static bool CheckInput(string input)
+        internal static bool EmptyString(string input)
         {
             bool isEmpty = String.IsNullOrEmpty(input);
 
@@ -312,5 +312,12 @@ namespace Project2_TransactionTracker
 
             return isEmpty;
         }
+
+        internal static bool EqualStrings(string input1, string input2)
+        {
+            StringComparison comparison = StringComparison.OrdinalIgnoreCase;
+            return String.Equals(input1, input2, comparison);
+        }
+
     }
 }

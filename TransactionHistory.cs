@@ -47,7 +47,7 @@ namespace Project2_TransactionTracker
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("> Transaction rejected.\n"+ 
-                    "Error: Balance cannot go below 0.\n" +
+                    "Error: Balance would go below 0.\n" +
                     $"Current balance: {this.CalculateBalance()}"
                 );
                 return;
@@ -85,8 +85,8 @@ namespace Project2_TransactionTracker
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error processing device index.");
-                Console.WriteLine(e);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Error removing at index [{index}]:\n" + e.GetType());
             }
         }
 
@@ -108,26 +108,26 @@ namespace Project2_TransactionTracker
             catch (Exception e)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Error editing index [{index}].");
-                Console.WriteLine(e);
+                Console.WriteLine($"Error editing index [{index}].\n" + e.GetType());
                 return;
             }
 
 
-            Console.WriteLine($"\nCurrent Date: {transaction.TimeString}" + 
+            Console.WriteLine($"\nCurrent Date: {transaction.TimeString}\n" + 
                 "Input new Date YYYY-MM-DD or leave blank to skip"
             );
-            string? itemTime = Console.ReadLine();
-            bool isValidDate = DateOnly.TryParse(itemTime, out DateOnly newDate);
+            Console.Write("Input Date: ");
+            string? itemTime = Console.ReadLine().Trim();
+            bool isValidDate = DateOnly.TryParse(itemTime, out _);
 
             if (String.IsNullOrEmpty(itemTime))
             {
                 itemTime = transaction.TimeString;
             }
-            else if (!isValidDate && !String.IsNullOrEmpty(itemTime))
+            else if ( ! isValidDate && ! String.IsNullOrEmpty(itemTime))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Date format incorrect. YYYY-MM-DD. Aborting.");
+                Console.WriteLine("Date format incorrect. YYYY-MM-DD.");
                 return;
             }
 
@@ -136,7 +136,7 @@ namespace Project2_TransactionTracker
                 "Input new Name or leave blank to skip."
             );
             Console.Write("Input Name: ");
-            string? itemName = Console.ReadLine();
+            string? itemName = Console.ReadLine().Trim();
 
             if (String.IsNullOrEmpty(itemName))
             {
@@ -148,8 +148,8 @@ namespace Project2_TransactionTracker
                 "Input new Value or leave blank to skip."
             );
             Console.Write("Input Value: ");
-            string? itemValue = Console.ReadLine();
-            bool isValidValue = Decimal.TryParse(itemValue, out Decimal newDecimal);
+            string? itemValue = Console.ReadLine().Trim();
+            bool isValidValue = Decimal.TryParse(itemValue, out _);
 
             if (String.IsNullOrEmpty(itemValue))
             {
@@ -163,7 +163,7 @@ namespace Project2_TransactionTracker
             }
 
             //If nothing has gone wrong, save the values.
-            transaction.TransactionTime = newDate;
+            transaction.TimeString = itemTime;
             transaction.TransactionName = itemName;
             transaction.TransactionValue = Convert.ToDecimal(itemValue);
             Console.ForegroundColor= ConsoleColor.Green;
@@ -186,37 +186,37 @@ namespace Project2_TransactionTracker
             {
                 case "name a":
                     Console.WriteLine("> Sorted by Name Ascending");
-                    this._transactions = this._transactions.OrderBy(name => name.TransactionName).ToList();
+                    this._transactions = [.. this._transactions.OrderBy(name => name.TransactionName)];
                     break; 
 
                 case "name d":
                     Console.WriteLine("> Sorted by Name Descending");
-                    this._transactions = this._transactions.OrderByDescending(name => name.TransactionName).ToList();
+                    this._transactions = [.. this._transactions.OrderByDescending(name => name.TransactionName)];
                     break;
 
                 case "value a":
-                    this._transactions = this._transactions.OrderBy(value => value.TransactionValue).ToList();
+                    this._transactions = [.. this._transactions.OrderBy(value => value.TransactionValue)];
                     Console.WriteLine("> Sorted by Value Ascending");
                     break;
 
                 case "value d":
-                    this._transactions = this._transactions.OrderByDescending(value => value.TransactionValue).ToList();
+                    this._transactions = [.. this._transactions.OrderByDescending(value => value.TransactionValue)];
                     Console.WriteLine("> Sorted by Value Descending");
                     break;
 
                 case "date a":
-                    this._transactions = this._transactions.OrderBy(date => date.TransactionTime).ToList();
+                    this._transactions = [.. this._transactions.OrderBy(date => date.TransactionTime)];
                     Console.WriteLine("> Sorted by Date Ascending");
                     break;
 
                 case "date d":
-                    this._transactions = this._transactions.OrderByDescending(date => date.TransactionTime).ToList();
+                    this._transactions = [.. this._transactions.OrderByDescending(date => date.TransactionTime)];
                     Console.WriteLine("> Sorted by Date Descending");
                     break;
 
                 default:
                     Console.WriteLine("> Input not recognized. Defaulting to Date Ascending.");
-                    this._transactions = this._transactions.OrderBy(date => date.TransactionTime).ToList();
+                    this._transactions = [.. this._transactions.OrderBy(date => date.TransactionTime)];
                     break;
             }
         }
@@ -292,20 +292,20 @@ namespace Project2_TransactionTracker
 
 
         //Check FilePath for history, else return empty List.
-        public List<Transaction> ReadHistory()
+        internal List<Transaction> ReadHistory()
         {
-            List<Transaction> transactions = [];
+            List<Transaction> transactions = new List<Transaction>();
 
             if (File.Exists(FilePath))
             {
                 XmlReader reader = XmlReader.Create(FilePath);
-                XmlSerializer serializer = new XmlSerializer(typeof(List<Transaction>));
+                XmlSerializer serializer = new(typeof(List<Transaction>));
 
                 try
                 {
                     using (reader)
                     {
-                        transactions = (List<Transaction>)serializer.Deserialize(reader);
+                        transactions = serializer.Deserialize(reader) as List<Transaction>;
                     }
                 }
                 catch (Exception) 
@@ -323,13 +323,15 @@ namespace Project2_TransactionTracker
 
         internal void WriteHistory()
         {
-            XmlWriterSettings writerSettings = new XmlWriterSettings();
-            writerSettings.Indent = true;
-            writerSettings.OmitXmlDeclaration = true;
+            XmlWriterSettings writerSettings = new()
+            {
+                Indent = true,
+                OmitXmlDeclaration = true
+            };
             XmlWriter writer = XmlWriter.Create(this.FilePath, writerSettings);
 
-            XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
-            XmlSerializer serializer = new XmlSerializer(typeof(List<Transaction>));
+            XmlSerializerNamespaces namespaces = new(new[] { XmlQualifiedName.Empty });
+            XmlSerializer serializer = new(typeof(List<Transaction>));
 
             try
             {

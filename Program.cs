@@ -2,13 +2,14 @@
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {           
             string filePath = @"./TransactionHistory.xml";
-            TransactionHistory History = new TransactionHistory(filePath);
+            TransactionHistory History = new(filePath);
 
             Console.ForegroundColor = ConsoleColor.DarkCyan;
-            Console.WriteLine("-------------\n" +
+            Console.WriteLine("" +
+                "-------------\n" +
                 "| KittyCash |\n" +
                 "-------------"
             );
@@ -23,7 +24,7 @@
                 "> Reset: Reset transaction history.\n" +
                 "> Quit: Quit the program.\n" +
                 "List & Sort have shortened versions. Append by [method].\n" +
-                "Example: \"sort date\" to sort by date ascending."
+                "Example: \"sort date a\" to sort by date ascending."
             );
             Console.WriteLine($"\nCurrent balance: {History.CalculateBalance()}");
 
@@ -33,7 +34,7 @@
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
                 Console.WriteLine("\nMain Commands: Add, Fastadd, Edit, List, Sort, Reset, Quit, Help");
                 Console.Write("Input main: ");
-                input = Console.ReadLine();
+                input = Console.ReadLine().Trim();
 
                 switch (input.ToLower()) 
                 {
@@ -60,6 +61,7 @@
                         History.ShowTransactions(listInput);
                         break;
 
+                    //Quick List options
                     case "list all":
                         History.ShowTransactions("all");
                         break;
@@ -80,16 +82,29 @@
                         History.Sort(sortInput);
                         break;
 
-                    case "sort date":
+                    //Quick Sort options.
+                    case "sort date a":
                         History.Sort("date", "a");
                         break;
 
-                    case "sort name":
+                    case "sort date d":
+                        History.Sort("date", "d");
+                        break;
+
+                    case "sort name a":
                         History.Sort("name", "a");
                         break;
 
-                    case "sort value":
+                    case "sort name d":
+                        History.Sort("name", "d");
+                        break;
+
+                    case "sort value a":
                         History.Sort("value", "a");
+                        break;
+
+                    case "sort value d":
+                        History.Sort("value", "d");
                         break;
 
 
@@ -121,7 +136,7 @@
                 //Save after each change
                 History.WriteHistory();
             }
-            while (input != "quit");
+            while (input.ToLower() is not "quit");
         }
     }
 }
