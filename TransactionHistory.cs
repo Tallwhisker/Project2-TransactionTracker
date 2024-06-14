@@ -43,7 +43,7 @@ namespace Project2_TransactionTracker
             bool isIncome = transaction.TransactionType == TransactionTypes.Income;
 
             //Check that the new expense doesn't cause negative balance.
-            if (isExpense && transactionValue + currentBalance < 0) 
+            if ( isExpense && transactionValue + currentBalance < 0 ) 
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("> Transaction rejected.\n"+ 
@@ -54,7 +54,7 @@ namespace Project2_TransactionTracker
             }
 
             //Check that the new income doesn't go above Decimal Max
-            if (isIncome && transactionValue + currentBalance > Decimal.MaxValue) 
+            if ( isIncome && transactionValue + currentBalance > Decimal.MaxValue ) 
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("> Transaction rejected.\n" +
@@ -78,15 +78,13 @@ namespace Project2_TransactionTracker
                 this._transactions.RemoveAt(index);
                 Console.WriteLine($"> Removed transaction at index [{index}].");
             }
-            catch (ArgumentOutOfRangeException)
+            catch ( ArgumentOutOfRangeException )
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Error: Index [{index}] does not exist.");
+                TransactionManager.PrintError($"Error: Index [{index}] does not exist.");
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Error removing at index [{index}]:\n" + e.GetType());
+                TransactionManager.PrintError($"Error removing at index [{index}]:\n" + e.GetType());
             }
         }
 
@@ -99,16 +97,14 @@ namespace Project2_TransactionTracker
                 transaction = this._transactions[index];
                 Console.WriteLine($"> Editing Index [{index}]");
             }
-            catch (ArgumentOutOfRangeException)
+            catch ( ArgumentOutOfRangeException )
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Error: Index [{index}] does not exist.");
+                TransactionManager.PrintError($"Error: Index [{index}] does not exist.");
                 return;
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"Error editing index [{index}].\n" + e.GetType());
+                TransactionManager.PrintError($"Error editing index [{index}].\n" + e.GetType());
                 return;
             }
 
@@ -120,14 +116,13 @@ namespace Project2_TransactionTracker
             string? itemTime = Console.ReadLine().Trim();
             bool isValidDate = DateOnly.TryParse(itemTime, out _);
 
-            if (String.IsNullOrEmpty(itemTime))
+            if ( String.IsNullOrEmpty(itemTime) )
             {
                 itemTime = transaction.TimeString;
             }
             else if ( ! isValidDate && ! String.IsNullOrEmpty(itemTime))
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Date format incorrect. YYYY-MM-DD.");
+                TransactionManager.PrintError("Date format incorrect. YYYY-MM-DD.");
                 return;
             }
 
@@ -138,7 +133,7 @@ namespace Project2_TransactionTracker
             Console.Write("Input Name: ");
             string? itemName = Console.ReadLine().Trim();
 
-            if (String.IsNullOrEmpty(itemName))
+            if ( String.IsNullOrEmpty(itemName) )
             {
                 itemName = transaction.TransactionName;
             }
@@ -151,14 +146,13 @@ namespace Project2_TransactionTracker
             string? itemValue = Console.ReadLine().Trim();
             bool isValidValue = Decimal.TryParse(itemValue, out _);
 
-            if (String.IsNullOrEmpty(itemValue))
+            if ( String.IsNullOrEmpty(itemValue) )
             {
                 itemValue = transaction.TransactionValue.ToString();
             }
-            else if ( ! isValidValue && ! String.IsNullOrEmpty(itemValue))
+            else if ( ! isValidValue && ! String.IsNullOrEmpty(itemValue) )
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("Value needs to be a number. Aborting.");
+                TransactionManager.PrintError("Value needs to be a number. Aborting.");
                 return;
             }
 
@@ -184,7 +178,7 @@ namespace Project2_TransactionTracker
         public void Sort(string method, string methodTwo = "")
         {
             //If optional argument methodTwo isn't provided, ask user for it.
-            if (String.IsNullOrEmpty(methodTwo)) 
+            if ( String.IsNullOrEmpty( methodTwo) ) 
             {
                 Console.WriteLine("Sort by Ascending 'a' or Descending 'd'?");
                 Console.Write("Input: ");
@@ -192,7 +186,7 @@ namespace Project2_TransactionTracker
             }
             method = String.Concat(method, $" {methodTwo}");
 
-            switch (method.ToLower())
+            switch ( method.ToLower() )
             {
                 case "name a":
                     Console.WriteLine("> Sorted by Name Ascending");
@@ -236,7 +230,7 @@ namespace Project2_TransactionTracker
         {
             Console.ForegroundColor = ConsoleColor.DarkCyan;
 
-            switch (method.ToLower())
+            switch ( method.ToLower() )
             {
                 case "all":
                     method = "All";
@@ -251,10 +245,8 @@ namespace Project2_TransactionTracker
                     break;
 
                 default:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"> List method '{method}' not recognized. Defaulting to 'all'");
+                    TransactionManager.PrintError($"> List method '{method}' not recognized. Defaulting to 'all'");
                     method = "All";
-                    Console.ResetColor();
                     break;
             }
 
@@ -267,14 +259,14 @@ namespace Project2_TransactionTracker
 
 
             int index = 0;
-            foreach (var item in _transactions)
+            foreach ( var item in _transactions )
             {
                 string type = item.TransactionType.ToString();
                 StringComparison comparison = StringComparison.OrdinalIgnoreCase;
                 bool isSameType = String.Equals( type, method, comparison );
 
                 //If List method is "all" let everything through
-                if (method.Equals( "all", comparison ))
+                if ( method.Equals( "all", comparison ) )
                 {
                     Console.WriteLine($"" +
                         $"{index,-13}" +
@@ -284,7 +276,7 @@ namespace Project2_TransactionTracker
                     );
                 }
                 //Else only allow matching types
-                else if (isSameType)
+                else if ( isSameType )
                 {
                     Console.WriteLine($"" +
                         $"{index,-13}" +
@@ -306,25 +298,25 @@ namespace Project2_TransactionTracker
         {
             List<Transaction> transactions = new List<Transaction>();
 
-            if (File.Exists(FilePath))
+            if ( File.Exists(FilePath) )
             {
                 XmlReader reader = XmlReader.Create(FilePath);
                 XmlSerializer serializer = new(typeof(List<Transaction>));
 
                 try
                 {
-                    using (reader)
+                    using ( reader )
                     {
                         transactions = serializer.Deserialize(reader) as List<Transaction>;
                     }
                 }
-                catch (Exception) 
+                catch ( Exception ) 
                 {
                     reader.Dispose();
                     reader.Close();
-                    Console.WriteLine("Error loading history.");
                     File.Delete(FilePath);
-                    Console.WriteLine($"Data file at \"{FilePath}\" has been replaced with an empty file due to this error.");
+                    TransactionManager.PrintError("Error loading history.\n" +
+                    $"Data file at \"{FilePath}\" has been replaced with an empty file due to this error.");
                 }
             }
             return transactions;
@@ -345,16 +337,16 @@ namespace Project2_TransactionTracker
 
             try
             {
-                using (writer)
+                using ( writer )
                 {
                     serializer.Serialize(writer, this._transactions, namespaces);
                     writer.Dispose();
                     writer.Close();
                 }
             }
-            catch (Exception e)
+            catch ( Exception e )
             {
-                Console.WriteLine("Error when saving file.\n" + e);
+                TransactionManager.PrintError("Error when saving file." + e);
             }
         }
 
@@ -365,7 +357,7 @@ namespace Project2_TransactionTracker
             Console.Write("Input: ");
             string? input = Console.ReadLine();
 
-            switch (input)
+            switch ( input )
             {
                 case "y":
                     if (File.Exists(FilePath)) 
