@@ -48,7 +48,7 @@ namespace Project2_TransactionTracker
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("> Transaction rejected.\n"+ 
                     "Error: Balance would go below 0.\n" +
-                    $"Current balance: {this.CalculateBalance()}"
+                    $"Current balance: {this.CalculateBalance()}\n"
                 );
                 return;
             }
@@ -59,7 +59,7 @@ namespace Project2_TransactionTracker
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("> Transaction rejected.\n" +
                     $"Error: Balance cannot go above {Decimal.MaxValue}.\n" +
-                    $"Current balance: {this.CalculateBalance()}"
+                    $"Current balance: {this.CalculateBalance()}\n"
                 );
                 return;
             }
@@ -114,7 +114,7 @@ namespace Project2_TransactionTracker
 
 
             Console.WriteLine($"\nCurrent Date: {transaction.TimeString}\n" + 
-                "Input new Date YYYY-MM-DD or leave blank to skip"
+                            "Input new Date YYYY-MM-DD or leave blank to skip"
             );
             Console.Write("Input Date: ");
             string? itemTime = Console.ReadLine().Trim();
@@ -166,6 +166,16 @@ namespace Project2_TransactionTracker
             transaction.TimeString = itemTime;
             transaction.TransactionName = itemName;
             transaction.TransactionValue = Convert.ToDecimal(itemValue);
+
+            if (transaction.TransactionValue < 0) 
+            {
+                transaction.TransactionType = TransactionTypes.Expense; 
+            }
+            else if (transaction.TransactionValue > 0) 
+            {
+                transaction.TransactionType = TransactionTypes.Income; 
+            }
+
             Console.ForegroundColor= ConsoleColor.Green;
             Console.WriteLine("> Transaction Saved.");
         }

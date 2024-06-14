@@ -12,35 +12,40 @@ namespace Project2_TransactionTracker
     {
         public static TransactionHistory New(TransactionHistory history)
         {
-            string? itemType;
+            string? inputType;
             do
             {
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
-                Console.WriteLine("Add transaction type or 'exit' to save.");
+                Console.WriteLine("Add transaction type or 'exit' to save. Current balance: {0}", history.CalculateBalance());
 
                 Console.Write("Transaction type: ");
-                itemType = Console.ReadLine().Trim();
+                inputType = Console.ReadLine().Trim();
 
-                if (EqualStrings(itemType, "exit"))
+                if (EqualStrings(inputType, "exit"))
                 {
                     continue;
                 }
 
 
                 //Check if type is correct
-                switch (itemType.ToLower())
+                TransactionTypes itemType;
+                switch (inputType.ToLower())
                 {
                     case "expense":
+                        itemType = TransactionTypes.Expense;
+                        break;
                     case "income":
+                        itemType= TransactionTypes.Income;
                         break;
 
                     default:
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("Incorrect transaction type.\n" +
-                            "Expense\n" +
-                            "Income\n");
+                        Console.WriteLine("Incorrect transaction type. Valid inputs:\n" +
+                            "> Expense\n" +
+                            "> Income\n");
                         continue;
                 }
+
 
                 DateOnly itemDate;
                 try
@@ -70,6 +75,7 @@ namespace Project2_TransactionTracker
                     continue;
                 }
 
+
                 decimal itemValue;
                 try
                 {
@@ -90,30 +96,30 @@ namespace Project2_TransactionTracker
                 }
 
 
-                switch (itemType.ToLower())
+                switch (itemType)
                 {
-                    case "expense":
+                    case TransactionTypes.Expense:
                         if (itemValue > 0)
                         {
                             itemValue *= -1;
                         }
 
                         history.Add(new Transaction(
-                            TransactionTypes.Expense,
+                            itemType,
                             itemDate,
                             itemName,
                             itemValue
                         ));
                         break;
 
-                    case "income":
+                    case TransactionTypes.Income:
                         if (itemValue < 0)
                         {
                             itemValue = Math.Abs(itemValue);
                         }
 
                         history.Add(new Transaction(
-                            TransactionTypes.Income,
+                            itemType,
                             itemDate,
                             itemName,
                             itemValue
@@ -125,7 +131,7 @@ namespace Project2_TransactionTracker
                 }
             }
             //End of loop
-            while ( ! EqualStrings(itemType, "exit"));      
+            while ( ! EqualStrings(inputType, "exit"));      
             
             return history;
         }
@@ -138,7 +144,8 @@ namespace Project2_TransactionTracker
             {
                 Console.ForegroundColor = ConsoleColor.DarkCyan;
                 Console.WriteLine("\nPositive value for income, negative for expense.\n" +
-                    "Input format: YYYY-MM-DD NAME VALUE"
+                    $"Current balance: {history.CalculateBalance()}\n" +
+                    "Format YYYY-MM-DD NAME VALUE"
                 );
                 Console.Write("Input: ");
                 input = Console.ReadLine();
@@ -203,6 +210,7 @@ namespace Project2_TransactionTracker
                             newName,
                             newDecimal
                         ));
+                        Console.WriteLine("Type: Expense");
                     }
                     else if (newDecimal > 0)
                     {
@@ -212,9 +220,12 @@ namespace Project2_TransactionTracker
                             newName,
                             newDecimal
                         ));
+                        Console.WriteLine("Type: Income");
                     }
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine($"> Date: {newDate} Value: {newDecimal} Name: {newName}");
+                    Console.WriteLine($"Date: {newDate}\n" +
+                        $"Value: {newDecimal}\n" +
+                        $"Name: {newName}");
                 }
 
             } 
